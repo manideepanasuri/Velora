@@ -73,30 +73,6 @@ export function ReaderPage({
       };
       
       loadPdf();
-
-
-      // // Check IndexedDB if we have a saved spot
-      // getDb().then(async (db) => {
-      //   const docSettings = await db.get('documents', activeDocument.path);
-      //   console.log('Loaded document settings from DB:', docSettings);
-      //   if (docSettings && docSettings.pageNumber > 1) {
-      //     // Add small delay to let canvas renderers mount into DOM
-      //     setTimeout(() => {
-      //       if (linkServiceRef) {
-      //         linkServiceRef.current.page = docSettings.pageNumber;
-      //       } else {
-      //         // Try again if still rendering
-      //         const interval = setInterval(() => {
-      //           if (linkServiceRef) {
-      //             linkServiceRef.current.page = docSettings.pageNumber;
-      //             clearInterval(interval);
-      //           }
-      //         }, 200);
-      //         setTimeout(() => clearInterval(interval), 3000); // max wait
-      //       }
-      //     }, 1000);
-      //   }
-      // });
       
       return () => { isActive = false; };
     }

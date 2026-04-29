@@ -233,7 +233,7 @@ export function TopBar({
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className={`h-5 w-5 text-muted-foreground ${secondaryBarOpen ? 'bg-muted/80 text-foreground' : ''}`}
+                className={`h-5 w-5 text-muted-foreground ${secondaryBarOpen ? 'bg-background/80 text-foreground' : ''}`}
                 onClick={() => setSecondaryBarOpen(!secondaryBarOpen)}
                 title="Toggle Secondary Toolbar (Ctrl+E)"
                 style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
@@ -250,10 +250,11 @@ export function TopBar({
           )}
           <span className="sr-only">Toggle theme</span>
         </Button>
-          
-            <Link to="https://github.com/manideepanasuri/Velora" className='h-[1.2rem] w-[1.2rem] flex items-center justify-center' style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+          <Button variant="ghost" size="icon"title="Toggle theme" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+            <Link to="https://github.com/manideepanasuri/Velora" className='h-[1.2rem] w-[1.2rem] mx-2 flex items-center justify-center' style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
               <FontAwesomeIcon className='w-[1.2rem] h-[1.2rem]' icon={faGithub} />
             </Link>
+            </Button>
         </div>
 
         {/* Window Controls - Right aligned */}
