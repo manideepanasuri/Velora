@@ -23,6 +23,7 @@ interface PdfCanvasProps {
   currentPage?: number;
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
   setZoomLevel?: (val: number | ((prev: number) => number)) => void;
+  linkServiceRef?: any;
 }
 
 export function PdfCanvas({ 
@@ -37,6 +38,7 @@ export function PdfCanvas({
   sidebarOpen,
   currentPage,
   scrollContainerRef,
+  linkServiceRef
 }: PdfCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerContainerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +47,7 @@ export function PdfCanvas({
   
   // Persist Mozilla APIs across renders so Sidebar can bind exactly like Firefox
   const eventBusRef = useRef<any>(null);
-  const linkServiceRef = useRef<any>(null);
+  
   const pdfViewerRef = useRef<any>(null);
 
   if (!eventBusRef.current) {

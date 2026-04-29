@@ -76,7 +76,7 @@ function App(): React.JSX.Element {
 
 
   return (
-    <div className="flex flex-col h-screen text-foreground">
+    <div className="flex flex-col h-screen text-foreground bg-accent">
       <TopBar 
         secondaryBarOpen={secondaryBarOpen}
         setSecondaryBarOpen={setSecondaryBarOpen}
@@ -85,7 +85,7 @@ function App(): React.JSX.Element {
         activeDocumentId={activeDocumentId}
         setActiveDocumentId={setActiveDocumentId}
         onCloseDocument={handleCloseDocument}/>
-      <div className=' w-full h-full bg-accent'>
+      <div className=' w-full h-full bg-accent overflow-y-auto'>
         <Routes>
           <Route path="/" element={<Home onOpenDocument={handleOpenDocument} />} />
           <Route path="/reader" element={

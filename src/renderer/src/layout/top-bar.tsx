@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { DocumentObj } from '@/types/general';
 import { useTheme } from '@renderer/components/theme-provider';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 interface TopBarProps {
   secondaryBarOpen: boolean;
@@ -248,9 +250,10 @@ export function TopBar({
           )}
           <span className="sr-only">Toggle theme</span>
         </Button>
-          <Button variant="ghost" size="icon" className="h-5 w-5 text-muted-foreground" title="Settings" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-            <Settings className="w-3 h-3" />
-          </Button>
+          
+            <Link to="https://github.com/manideepanasuri/Velora" className='h-[1.2rem] w-[1.2rem] flex items-center justify-center' style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+              <FontAwesomeIcon className='w-[1.2rem] h-[1.2rem]' icon={faGithub} />
+            </Link>
         </div>
 
         {/* Window Controls - Right aligned */}

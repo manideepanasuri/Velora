@@ -6,6 +6,7 @@ import { DocumentObj } from '@/types/general';
 import { saveDocumentState, getDb, removeDocument } from '../lib/db';
 
 import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.mjs?url';
+import { link } from 'fs';
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
 interface ReaderProps {
@@ -36,6 +37,7 @@ export function ReaderPage({
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const linkServiceRef = useRef<any>(null);
 
   useEffect(() => {
     // Reset page states when opening a new document
@@ -73,33 +75,44 @@ export function ReaderPage({
       loadPdf();
 
 
-      // Check IndexedDB if we have a saved spot
-      getDb().then(async (db) => {
-        const docSettings = await db.get('documents', activeDocument.path);
-        if (docSettings && docSettings.pageNumber > 1) {
-          // Add small delay to let canvas renderers mount into DOM
-          setTimeout(() => {
-            const pageEl = document.getElementById(`pdf-page-${docSettings.pageNumber}`);
-            if (pageEl) {
-              pageEl.scrollIntoView();
-            } else {
-              // Try again if still rendering
-              const interval = setInterval(() => {
-                const el = document.getElementById(`pdf-page-${docSettings.pageNumber}`);
-                if (el) {
-                  el.scrollIntoView();
-                  clearInterval(interval);
-                }
-              }, 200);
-              setTimeout(() => clearInterval(interval), 3000); // max wait
-            }
-          }, 500);
-        }
-      });
+      // // Check IndexedDB if we have a saved spot
+      // getDb().then(async (db) => {
+      //   const docSettings = await db.get('documents', activeDocument.path);
+      //   console.log('Loaded document settings from DB:', docSettings);
+      //   if (docSettings && docSettings.pageNumber > 1) {
+      //     // Add small delay to let canvas renderers mount into DOM
+      //     setTimeout(() => {
+      //       if (linkServiceRef) {
+      //         linkServiceRef.current.page = docSettings.pageNumber;
+      //       } else {
+      //         // Try again if still rendering
+      //         const interval = setInterval(() => {
+      //           if (linkServiceRef) {
+      //             linkServiceRef.current.page = docSettings.pageNumber;
+      //             clearInterval(interval);
+      //           }
+      //         }, 200);
+      //         setTimeout(() => clearInterval(interval), 3000); // max wait
+      //       }
+      //     }, 1000);
+      //   }
+      // });
       
       return () => { isActive = false; };
     }
   }, [activeDocument?.id]);
+
+
+  useEffect(() => {
+  if (linkServiceRef.current && activeDocument) {
+    getDb().then(async (db) => {
+      const docSettings = await db.get('documents', activeDocument.path);
+      if (docSettings&&docSettings?.pageNumber > 1) {
+        linkServiceRef.current.page = docSettings.pageNumber;
+      }
+    });
+  }
+}, [linkServiceRef.current, activeDocument]); // Re-run when the ref is assigned
 
 
 
@@ -129,7 +142,7 @@ export function ReaderPage({
         currentPage={currentPage}
         numPages={numPages}
         onJumpToPage={(p) => {
-          document.getElementById(`pdf-page-${p}`)?.scrollIntoView({ behavior: 'smooth' });
+          linkServiceRef.current.page = p;
         }}
       />
       
@@ -148,6 +161,7 @@ export function ReaderPage({
             pdfError={pdfError}
             setPdfError={setPdfError}
             scrollContainerRef={scrollContainerRef}
+            linkServiceRef={linkServiceRef}
           />
         ) : (
           <div className="flex flex-1 w-full h-full justify-center items-center">

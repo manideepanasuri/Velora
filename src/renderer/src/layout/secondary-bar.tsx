@@ -40,10 +40,12 @@ export function SecondaryBar({
   const handleZoomIn = () => setZoomLevel(Math.min(5.0, zoomLevel + 0.25));
 
   const handleNextPage = () => {
+    console.log('Attempting to jump to next page from:', currentPage);
     if (currentPage < numPages && onJumpToPage) onJumpToPage(currentPage + 1);
   };
 
   const handlePrevPage = () => {
+    console.log('Attempting to jump to previous page from:', currentPage);
     if (currentPage > 1 && onJumpToPage) onJumpToPage(currentPage - 1);
   };
 
@@ -56,6 +58,7 @@ export function SecondaryBar({
 
   const handleJump = () => {
     const p = parseInt(inputVal, 10);
+    console.log('Attempting to jump to page:', p);
     if (!isNaN(p) && p >= 1 && p <= numPages && onJumpToPage) {
       onJumpToPage(p);
     } else {
@@ -96,7 +99,7 @@ export function SecondaryBar({
           <SidebarIcon className="w-4 h-4" />
         </Button>
         
-        <div className="h-4 w-[1px] bg-border mx-1"></div>
+        {/* <div className="h-4 w-[1px] bg-border mx-1"></div>
 
         <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground">
           <Highlighter className="w-4 h-4" />
@@ -106,20 +109,10 @@ export function SecondaryBar({
         </Button>
         <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground">
           <BookmarkPlus className="w-4 h-4" />
-        </Button>
+        </Button> */}
       </div>
 
       <div className="flex items-center space-x-2">
-        <div className="relative">
-          <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input 
-            type="text" 
-            placeholder="Search document..." 
-            className="pl-8 pr-3 py-1 rounded bg-muted/50 text-xs border-none focus:ring-1 focus:ring-indigo-500 outline-none w-48 transition-all focus:w-64"
-          />
-        </div>
-
-        <div className="h-4 w-[1px] bg-border mx-1"></div>
 
         {/* Page Controls */}
         <div className="flex items-center space-x-1 mx-2">

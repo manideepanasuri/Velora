@@ -4,39 +4,55 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import fs from 'fs'
 
+
 function createWindow(): void {
-  // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    frame: false, // removes the default OS top bar
-    titleBarStyle: 'hidden', // hides title bar but keeps macOS traffic lights if applicable
+    frame: false,
+    titleBarStyle: 'hidden',
     ...(process.platform === 'linux' ? { icon } : {}),
+
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
+
+      // Security
+      contextIsolation: true,
+      nodeIntegration: false,
       sandbox: false
     }
   })
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
+  // Open external links in browser
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url)
     return { action: 'deny' }
   })
 
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
+  // Prevent external navigation inside app
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    const currentUrl = mainWindow.webContents.getURL()
+
+    if (new URL(url).origin !== new URL(currentUrl).origin) {
+      event.preventDefault()
+      shell.openExternal(url)
+    }
+  })
+
+  // Dev / Production loading
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
