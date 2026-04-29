@@ -140,7 +140,7 @@ export function TopBar({
 
   return (
     <header 
-      className="h-9 bg-muted/80 flex items-center justify-between border-b border-border z-10 shrink-0 select-none pl-3"
+      className="h-9 bg-background flex items-center justify-between border-b border-border z-10 shrink-0 select-none pl-3"
       style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
     >
       {/* Left Area: Controls & Logo */}

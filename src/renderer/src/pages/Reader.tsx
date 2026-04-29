@@ -53,7 +53,7 @@ export function ReaderPage({
       let isActive = true;
       const loadPdf = async () => {
         try {
-          const buffer = await window.api.readFile(activeDocument.path);
+          const buffer = await (window.api as any).readFile(activeDocument.path);
           if (!buffer) throw new Error('Failed to read file buffer');
           if (isActive) {
              const blob = new Blob([buffer], { type: 'application/pdf' });

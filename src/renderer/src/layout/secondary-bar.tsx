@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SidebarIcon, ZoomIn, ZoomOut, Search, Settings2, Highlighter, Edit3, BookmarkPlus, ArrowUp, ArrowDown, ChevronUp, ChevronDown, Palette } from 'lucide-react';
+import { SidebarIcon, ZoomIn, ZoomOut, Search, Highlighter, Edit3, BookmarkPlus, ChevronUp, ChevronDown, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   DropdownMenu, 

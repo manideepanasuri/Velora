@@ -48,7 +48,7 @@ export default function Home({ onOpenDocument }: { onOpenDocument: (path: string
 
   const handleOpenPdf = async () => {
     try {
-      const filePath = await window.api.openFileDialog()
+      const filePath = await (window.api as any).openFileDialog()
       if (filePath) {
         const fileName = filePath.split(/[/\\]/).pop() || 'Document.pdf';
         onOpenDocument(filePath, fileName)

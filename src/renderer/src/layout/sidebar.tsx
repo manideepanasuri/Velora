@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Layers, List, Bookmark } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
@@ -152,7 +152,7 @@ function ThumbCanvas({ pdfDoc, pageNumber }: { pdfDoc?: pdfjsLib.PDFDocumentProx
       canvas.height = viewport.height;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-      page.render({ canvasContext: ctx, viewport });
+      page.render({ canvasContext: ctx, viewport,canvas });
     });
 
     return () => { active = false; };

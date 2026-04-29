@@ -138,25 +138,25 @@
 
   ::-webkit-scrollbar-thumb {
     /* Lowered from 0.25 to 0.10 for high transparency */
-    background-color: hsl(var(--muted-foreground) / 0.10);
-    border-radius: 10px;
-    border: 4px solid hsl(var(--background));
+    background-color: hsl(var(--muted-foreground) / 0.05) !important;
+    border-radius: 10px !important;
+    border: 4px solid hsl(var(--background)) !important;
     background-clip: padding-box;
   }
 
   ::-webkit-scrollbar-thumb:hover {
     /* Lowered hover from 0.45 to 0.25 so it still subtle when using it */
-    background-color: hsl(var(--muted-foreground) / 0.25);
+    background-color: hsl(var(--muted-foreground) / 0.10) !important ;
   }
 
   ::-webkit-scrollbar-corner {
-    background: transparent;
+    background: transparent !important;
   }
 
   /* Firefox */
   * {
     scrollbar-width: thin;
     /* Lowered Firefox base opacity to match */
-    scrollbar-color: hsl(var(--muted-foreground) / 0.10) transparent;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.05) transparent !important;
   }
 }
