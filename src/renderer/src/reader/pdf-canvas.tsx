@@ -173,6 +173,34 @@ export function PdfCanvas({
     return () => el.removeEventListener('wheel', handleWheel);
   }, [setZoomLevel]);
 
+  // Handle Arrow keys for pagination
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.key === 'ArrowRight') {
+        if (pdfViewerRef.current) {
+          const current = pdfViewerRef.current.currentPageNumber;
+          const total = pdfViewerRef.current.pagesCount;
+          if (current < total) {
+            pdfViewerRef.current.currentPageNumber = current + 1;
+          }
+        }
+      } else if (e.key === 'ArrowLeft') {
+        if (pdfViewerRef.current) {
+          const current = pdfViewerRef.current.currentPageNumber;
+          if (current > 1) {
+            pdfViewerRef.current.currentPageNumber = current - 1;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Handle Dark Mode CSS filtering smoothly over the PDFViewer class
   const getFilter = () => {
     if (pdfTheme === 'invert') return 'invert(0.92) hue-rotate(180deg) brightness(1.05) contrast(0.95)';
