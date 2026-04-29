@@ -6,6 +6,8 @@ import App from './App'
 import { ThemeProvider } from './components/theme-provider'
 import { BrowserRouter } from 'react-router'
 
+
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="velora-theme">

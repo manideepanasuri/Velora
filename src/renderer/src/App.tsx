@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import { TopBar } from './layout/top-bar'
 import { useEffect, useState } from 'react';
 import { DocumentObj } from './types/general';
+import { ReaderPage } from './pages/Reader';
 
 function App(): React.JSX.Element {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,7 +16,10 @@ function App(): React.JSX.Element {
 
   const navigate = useNavigate();
 
-
+  useEffect(() => {
+    console.log('Active document changed:', openDocuments);
+  }, [openDocuments])
+  
   const handleOpenDocument = (path: string, name: string) => {
     // Check if exactly this path is already open
     const existing = openDocuments.find(d => d.path === path);
@@ -72,7 +76,7 @@ function App(): React.JSX.Element {
 
 
   return (
-    <>
+    <div className="flex flex-col h-screen text-foreground overflow-hidden bg-background">
       <TopBar 
         secondaryBarOpen={secondaryBarOpen}
         setSecondaryBarOpen={setSecondaryBarOpen}
@@ -81,12 +85,26 @@ function App(): React.JSX.Element {
         activeDocumentId={activeDocumentId}
         setActiveDocumentId={setActiveDocumentId}
         onCloseDocument={handleCloseDocument}/>
-      <div className='p-3'>
+      <div className='px-3 w-full h-full'>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home onOpenDocument={handleOpenDocument} />} />
+          <Route path="/reader" element={
+          <ReaderPage 
+            sidebarOpen={sidebarOpen} 
+            setSidebarOpen={setSidebarOpen} 
+            secondaryBarOpen={secondaryBarOpen}
+            setSecondaryBarOpen={setSecondaryBarOpen}
+            activeDocument={activeDocument}
+            zoomLevel={zoomLevel}
+            setZoomLevel={setZoomLevel}
+            pdfTheme={pdfTheme}
+            setPdfTheme={setPdfTheme}
+          />
+        } />
         </Routes>
+
       </div>
-    </>
+    </div>
   )
 }
 

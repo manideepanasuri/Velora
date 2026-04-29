@@ -1,0 +1,3 @@
+/* Keep native Mozilla PDF viewer CSS exactly as it comes */
+@import 'pdfjs-dist/legacy/web/pdf_viewer.css';
+
