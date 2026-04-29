@@ -1,7 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import fs from 'fs'
 
 function createWindow(): void {
   // Create the browser window.
@@ -10,6 +11,8 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
+    frame: false, // removes the default OS top bar
+    titleBarStyle: 'hidden', // hides title bar but keeps macOS traffic lights if applicable
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -51,6 +54,51 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+
+  // Custom Window Controls
+  ipcMain.on('window-minimize', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    win?.minimize()
+  })
+
+  ipcMain.on('window-maximize', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (win?.isMaximized()) {
+      win.unmaximize()
+    } else {
+      win?.maximize()
+    }
+  })
+
+  ipcMain.on('window-close', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    win?.close()
+  })
+
+  // File functionality
+  ipcMain.handle('dialog:openFile', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      title: 'Open PDF',
+      properties: ['openFile'],
+      filters: [{ name: 'PDF Documents', extensions: ['pdf'] }]
+    })
+    if (!canceled && filePaths.length > 0) {
+      return filePaths[0]
+    }
+    return null
+  })
+
+  ipcMain.handle('fs:readFile', async (_, filePath) => {
+    try {
+      // Returns a Buffer, which is converted to Uint8Array over IPC
+      return fs.readFileSync(filePath)
+    } catch (e) {
+      console.error('Failed to read file:', e)
+      return null
+    }
+  })
+
 
   createWindow()
 
