@@ -76,7 +76,7 @@ function App(): React.JSX.Element {
 
 
   return (
-    <div className="flex flex-col h-screen text-foreground overflow-hidden bg-background">
+    <div className="flex flex-col h-screen text-foreground bg-background">
       <TopBar 
         secondaryBarOpen={secondaryBarOpen}
         setSecondaryBarOpen={setSecondaryBarOpen}

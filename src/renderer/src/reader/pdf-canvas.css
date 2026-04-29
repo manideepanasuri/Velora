@@ -1,3 +1,15 @@
 /* Keep native Mozilla PDF viewer CSS exactly as it comes */
 @import 'pdfjs-dist/legacy/web/pdf_viewer.css';
 
+/* Protect PDF.js mathematical layout from Tailwind's global resets */
+.pdfViewer .page {
+  /* Tailwind sets everything to border-box, but PDF.js expects content-box */
+  box-sizing: content-box !important; 
+}
+
+.pdfViewer .textLayer span {
+  /* Kill Tailwind's default 1.5 line-height so text sits exactly on its coordinate */
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
