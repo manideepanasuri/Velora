@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { DocumentObj } from './types/general';
 
 function App(): React.JSX.Element {
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [secondaryBarOpen, setSecondaryBarOpen] = useState(true);
 
@@ -46,16 +45,6 @@ function App(): React.JSX.Element {
     });
   };
 
-  // Toggle true dark mode on the body element for Velora branding
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      document.body.style.backgroundColor = '#0D0D0D';
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.body.style.backgroundColor = '#ffffff';
-    }
-  }, [isDarkMode]);
 
   // Global viewer state for the active tab (in a fuller app, keep these objects linked to document IDs)
   const [zoomLevel, setZoomLevel] = useState(1.0);
@@ -85,19 +74,18 @@ function App(): React.JSX.Element {
   return (
     <>
       <TopBar 
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
         secondaryBarOpen={secondaryBarOpen}
         setSecondaryBarOpen={setSecondaryBarOpen}
         openDocuments={openDocuments}
         setOpenDocuments={setOpenDocuments} // We need this for drag and drop reordering
         activeDocumentId={activeDocumentId}
         setActiveDocumentId={setActiveDocumentId}
-        onCloseDocument={handleCloseDocument}
-      />
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+        onCloseDocument={handleCloseDocument}/>
+      <div className='p-3'>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </div>
     </>
   )
 }

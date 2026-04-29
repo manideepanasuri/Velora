@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Moon, Sun, Settings, Minus, Square, X, Plus, PanelTop, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Moon, Sun, Settings, Minus, Square, X, Plus, PanelTop, ChevronLeft, ChevronRight, Copy } from 'lucide-react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { restrictToHorizontalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
@@ -7,10 +7,9 @@ import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { DocumentObj } from '@/types/general';
+import { useTheme } from '@renderer/components/theme-provider';
 
 interface TopBarProps {
-  isDarkMode: boolean;
-  setIsDarkMode: (dark: boolean) => void;
   secondaryBarOpen: boolean;
   setSecondaryBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   openDocuments: DocumentObj[];
@@ -21,8 +20,6 @@ interface TopBarProps {
 }
 
 export function TopBar({ 
-  isDarkMode, 
-  setIsDarkMode, 
   secondaryBarOpen, 
   setSecondaryBarOpen, 
   openDocuments,
@@ -34,6 +31,8 @@ export function TopBar({
   const location = useLocation();
   const navigate = useNavigate();
   const isReader = location.pathname.includes('/reader');
+
+  const { setTheme, theme } = useTheme()
 
   // Shortcuts
   useEffect(() => {
@@ -56,8 +55,17 @@ export function TopBar({
 
   // These functions communicate with main/index.ts for window controls
   // Ensure we check if `window.electron` exists for safety
+  const [isMaximized, setIsMaximized] = useState(false);
+  useEffect(() => {
+  window.electron.ipcRenderer.on(
+    'window-maximized',
+    (_event,maximized: boolean) => {
+      setIsMaximized(maximized);
+    }
+  );
+}, []);
   const handleMinimize = () => window.electron?.ipcRenderer.send('window-minimize');
-  const handleMaximize = () => window.electron?.ipcRenderer.send('window-maximize');
+  const handleMaximize = () => window.electron?.ipcRenderer.send('window-toggle-maximize');
   const handleClose = () => window.electron?.ipcRenderer.send('window-close');
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -138,7 +146,6 @@ export function TopBar({
       {/* Left Area: Controls & Logo */}
       <div className="flex items-center space-x-3 h-full shrink-0">
         <Link to="/" className="font-semibold text-[13px] flex items-center gap-1.5 text-indigo-500 hover:opacity-80 transition-opacity mt-1.5 mr-2" title="Go to Home" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-          <span className="w-4 h-4 rounded bg-indigo-500 text-white flex items-center justify-center font-bold text-[8px]">V</span>
           Velora
         </Link>
       </div>
@@ -233,16 +240,14 @@ export function TopBar({
               </Button>
             </div>
           )}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-5 w-5 text-muted-foreground"
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            title="Toggle Theme"
-            style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-          >
-            {isDarkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
-          </Button>
+          <Button variant="ghost" size="icon" onClick={() => setTheme(theme==="light"?"dark":"light")} title="Toggle theme" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+          {theme === "light" ? (
+            <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+          ) : (
+            <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          )}
+          <span className="sr-only">Toggle theme</span>
+        </Button>
           <Button variant="ghost" size="icon" className="h-5 w-5 text-muted-foreground" title="Settings" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
             <Settings className="w-3 h-3" />
           </Button>
@@ -254,7 +259,7 @@ export function TopBar({
             <Minus className="w-3 h-3" />
           </button>
           <button onClick={handleMaximize} className="h-full px-3 hover:bg-muted/80 text-muted-foreground transition-colors flex items-center">
-            <Square className="w-2.5 h-2.5" />
+            {isMaximized ? <Copy className="w-2.5 h-2.5" /> : <Square className="w-2.5 h-2.5" />}
           </button>
           <button onClick={handleClose} className="h-full px-3 hover:bg-red-500 hover:text-white text-muted-foreground transition-colors flex items-center">
             <X className="w-3.5 h-3.5" />
