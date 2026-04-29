@@ -65,5 +65,22 @@
     "react-dom": "^19.2.1",
     "typescript": "^5.9.3",
     "vite": "^7.2.6"
+  },
+  "build": {
+    "appId": "com.velora.app",
+
+    "files": [
+      "dist/**/*",
+      "out/**/*"
+    ],
+
+    "fileAssociations": [
+      {
+        "ext": "pdf",
+        "name": "PDF Document",
+        "description": "Open PDF files with Velora",
+        "role": "Viewer"
+      }
+    ]
   }
 }

@@ -6,7 +6,6 @@ import { DocumentObj } from '@/types/general';
 import { saveDocumentState, getDb, removeDocument } from '../lib/db';
 
 import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.mjs?url';
-import { link } from 'fs';
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
 interface ReaderProps {
@@ -16,7 +15,7 @@ interface ReaderProps {
   setSecondaryBarOpen: (open: boolean) => void;
   activeDocument: DocumentObj | null;
   zoomLevel: number;
-  setZoomLevel: (val: number) => void;
+  setZoomLevel: (val: number | ((prev: number) => number)) => void;
   pdfTheme: string;
   setPdfTheme: (val: string) => void;
 }
@@ -38,6 +37,8 @@ export function ReaderPage({
   const [pdfError, setPdfError] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const linkServiceRef = useRef<any>(null);
+  const findControllerRef = useRef<any>(null);
+  const eventBusRef = useRef<any>(null);
 
   useEffect(() => {
     // Reset page states when opening a new document
@@ -76,6 +77,7 @@ export function ReaderPage({
       
       return () => { isActive = false; };
     }
+    return;
   }, [activeDocument?.id]);
 
 
@@ -120,6 +122,8 @@ export function ReaderPage({
         onJumpToPage={(p) => {
           linkServiceRef.current.page = p;
         }}
+        findControllerRef={findControllerRef}
+        eventBusRef={eventBusRef}
       />
       
       <div className="flex flex-1 w-full h-full overflow-hidden relative">
@@ -138,6 +142,8 @@ export function ReaderPage({
             setPdfError={setPdfError}
             scrollContainerRef={scrollContainerRef}
             linkServiceRef={linkServiceRef}
+            findControllerRef={findControllerRef}
+            eventBusRef={eventBusRef}
           />
         ) : (
           <div className="flex flex-1 w-full h-full justify-center items-center">

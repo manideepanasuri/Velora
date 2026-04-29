@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import fs from 'fs'
 
 
+
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 900,

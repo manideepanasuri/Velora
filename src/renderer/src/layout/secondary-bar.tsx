@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SidebarIcon, ZoomIn, ZoomOut, Search, Highlighter, Edit3, BookmarkPlus, ChevronUp, ChevronDown, Palette } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { SidebarIcon, ZoomIn, ZoomOut, Search, ChevronUp, ChevronDown, Palette, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   DropdownMenu, 
@@ -21,6 +21,8 @@ interface SecondaryBarProps {
   currentPage?: number;
   numPages?: number;
   onJumpToPage?: (page: number) => void;
+  findControllerRef?: React.RefObject<any>;
+  eventBusRef?: React.RefObject<any>;
 }
 
 export function SecondaryBar({ 
@@ -34,10 +36,128 @@ export function SecondaryBar({
   setPdfTheme,
   currentPage = 1,
   numPages = 0,
-  onJumpToPage
+  onJumpToPage,
+  findControllerRef,
+  eventBusRef
 }: SecondaryBarProps) {
   const handleZoomOut = () => setZoomLevel(Math.max(0.5, zoomLevel - 0.25));
   const handleZoomIn = () => setZoomLevel(Math.min(5.0, zoomLevel + 0.25));
+
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchMatch, setSearchMatch] = useState({ current: 0, total: 0 });
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        setSearchOpen(true);
+        setTimeout(() => searchInputRef.current?.focus(), 50);
+      }
+      if (e.key === 'Escape' && searchOpen) {
+        setSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [searchOpen]);
+
+  const executeSearch = (query: string, previous = false) => {
+    if (!eventBusRef?.current) return;
+    
+    if (!query) {
+      setSearchMatch({ current: 0, total: 0 });
+    }
+
+    eventBusRef.current.dispatch('find', {
+      source: this,
+      type: '',
+      query: query,
+      phraseSearch: true,
+      caseSensitive: false,
+      entireWord: false,
+      highlightAll: true,
+      findPrevious: previous,
+    });
+  };
+
+  const handleSearchNext = () => {
+    if (!searchQuery) return;
+    if (!eventBusRef?.current) return;
+
+    eventBusRef.current.dispatch('find', {
+      source: this,
+      type: 'again',
+      query: searchQuery,
+      phraseSearch: true,
+      caseSensitive: false,
+      highlightAll: true,
+      findPrevious: false,
+    });
+  };
+
+  const handleSearchPrev = () => {
+    if (!searchQuery) return;
+    if (!eventBusRef?.current) return;
+
+    eventBusRef.current.dispatch('find', {
+      source: this,
+      type: 'again',
+      query: searchQuery,
+      phraseSearch: true,
+      caseSensitive: false,
+      highlightAll: true,
+      findPrevious: true,
+    });
+  };
+
+  const closeSearch = () => {
+    setSearchOpen(false);
+    setSearchQuery('');
+    setSearchMatch({ current: 0, total: 0 });
+    if (!eventBusRef?.current) return;
+    
+    eventBusRef.current.dispatch('find', { 
+      source: this,
+      type: '', 
+      query: '' 
+    });
+  };
+
+  // Sync internal input value if currentPage changes via scroll
+  useEffect(() => {
+    const eventBus = eventBusRef?.current;
+    if (!eventBus) return;
+
+    const updateMatches = (e: any) => {
+      if (e && e.matchesCount) {
+        setSearchMatch({
+          current: e.matchesCount.total > 0 ? e.matchesCount.current : 0,
+          total: e.matchesCount.total
+        });
+      }
+    };
+
+    const updateControlState = (e: any) => {
+      if (e && e.matchesCount) {
+        setSearchMatch({
+          current: e.matchesCount.total > 0 ? e.matchesCount.current : 0,
+          total: e.matchesCount.total
+        });
+      } else if (e?.state === 1) {
+        // state 1: NOT_FOUND
+        setSearchMatch({ current: 0, total: 0 });
+      }
+    };
+
+    eventBus.on('updatefindmatchescount', updateMatches);
+    eventBus.on('updatefindcontrolstate', updateControlState);
+    return () => {
+      eventBus.off('updatefindmatchescount', updateMatches);
+      eventBus.off('updatefindcontrolstate', updateControlState);
+    };
+  }, [eventBusRef?.current]);
 
   const handleNextPage = () => {
     console.log('Attempting to jump to next page from:', currentPage);
@@ -110,6 +230,60 @@ export function SecondaryBar({
         <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground">
           <BookmarkPlus className="w-4 h-4" />
         </Button> */}
+
+        <div className="relative flex items-center">
+          <Button 
+            variant={searchOpen ? "secondary" : "ghost"} 
+            size="icon" 
+            className="h-7 w-7 text-muted-foreground" 
+            onClick={() => {
+              setSearchOpen(!searchOpen);
+              if (!searchOpen) setTimeout(() => searchInputRef.current?.focus(), 50);
+            }} 
+            title="Search (Ctrl+F)"
+          >
+            <Search className="w-4 h-4" />
+          </Button>
+
+          {searchOpen && (
+            <div className="absolute top-9 left-0 z-50 flex items-center bg-background border border-border shadow-lg rounded-md px-2 py-1.5 space-x-2 w-64 animate-in fade-in slide-in-from-top-1">
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder="Search document..."
+                className="flex-1 bg-transparent text-sm border-none outline-none focus:ring-0 px-1 placeholder:text-muted-foreground/60 w-full text-foreground"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  executeSearch(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    if (e.shiftKey) handleSearchPrev();
+                    else handleSearchNext();
+                  }
+                  if (e.key === 'Escape') {
+                    closeSearch();
+                  }
+                }}
+              />
+              <div className="flex items-center text-xs text-muted-foreground min-w-fit px-1">
+                {searchMatch.total > 0 ? `${searchMatch.current}/${searchMatch.total}` : '0/0'}
+              </div>
+              <div className="flex items-center space-x-0.5 border-l border-border pl-1">
+                <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={handleSearchPrev} disabled={!searchMatch.total} title="Previous Match (Shift+Enter)">
+                  <ChevronUp className="w-3.5 h-3.5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={handleSearchNext} disabled={!searchMatch.total} title="Next Match (Enter)">
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={closeSearch} title="Close">
+                  <X className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center space-x-2">

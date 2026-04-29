@@ -24,6 +24,8 @@ interface PdfCanvasProps {
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
   setZoomLevel?: (val: number | ((prev: number) => number)) => void;
   linkServiceRef?: any;
+  findControllerRef?: any;
+  eventBusRef?: any;
 }
 
 export function PdfCanvas({ 
@@ -38,7 +40,9 @@ export function PdfCanvas({
   sidebarOpen,
   currentPage,
   scrollContainerRef,
-  linkServiceRef
+  linkServiceRef,
+  findControllerRef,
+  eventBusRef
 }: PdfCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerContainerRef = useRef<HTMLDivElement>(null);
@@ -46,15 +50,26 @@ export function PdfCanvas({
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   
   // Persist Mozilla APIs across renders so Sidebar can bind exactly like Firefox
-  const eventBusRef = useRef<any>(null);
+  // Using passed eventBusRef from parent if present, fallback to local ref otherwise
+  const localEventBusRef = useRef<any>(null);
+  const activeEventBusRef = eventBusRef || localEventBusRef;
   
   const pdfViewerRef = useRef<any>(null);
 
-  if (!eventBusRef.current) {
-    eventBusRef.current = new pdfjsViewer.EventBus();
-    linkServiceRef.current = new pdfjsViewer.PDFLinkService({
-      eventBus: eventBusRef.current,
-    });
+  if (!activeEventBusRef.current) {
+    activeEventBusRef.current = new pdfjsViewer.EventBus();
+    if (linkServiceRef) {
+      linkServiceRef.current = new pdfjsViewer.PDFLinkService({
+        eventBus: activeEventBusRef.current,
+      });
+    }
+    
+    if (findControllerRef && linkServiceRef) {
+      findControllerRef.current = new pdfjsViewer.PDFFindController({
+        eventBus: activeEventBusRef.current,
+        linkService: linkServiceRef.current,
+      });
+    }
   }
   
 
@@ -68,22 +83,25 @@ export function PdfCanvas({
     const viewer = new pdfjsViewer.PDFViewer({
       container: containerRef.current,
       viewer: viewerContainerRef.current,
-      eventBus: eventBusRef.current,
-      linkService: linkServiceRef.current,
+      eventBus: activeEventBusRef.current,
+      linkService: linkServiceRef?.current,
+      findController: findControllerRef?.current,
       textLayerMode: 2, // Enable Mozilla's enhanced text selection CSS
       annotationMode: 2, // Enable form fields and annotations
     });
     console.log('PDFViewer initialized:', viewer);
 
-    linkServiceRef.current.setViewer(viewer);
+    if (linkServiceRef) {
+      linkServiceRef.current.setViewer(viewer);
+    }
     pdfViewerRef.current = viewer;
 
-    eventBusRef.current.on('pagesinit', () => {
+    activeEventBusRef.current.on('pagesinit', () => {
       // Set initial zoom once pages initialized
       viewer.currentScaleValue = zoomLevel.toString();
     });
 
-    eventBusRef.current.on('pagechanging', (evt: any) => {
+    activeEventBusRef.current.on('pagechanging', (evt: any) => {
       onPageActive(evt.pageNumber);
     });
 
@@ -110,6 +128,7 @@ export function PdfCanvas({
     return () => {
       active = false;
       // Clean up the viewer memory
+      // @ts-ignore
       viewer.setDocument(null);
       setPdfDoc(null);
     };
