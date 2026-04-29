@@ -8,6 +8,7 @@ import 'pdfjs-dist/legacy/web/pdf_viewer.css';
 import './pdf-canvas.css';
 
 import { Sidebar } from '@/layout/sidebar';
+import { ScrollArea } from 'radix-ui';
 
 interface PdfCanvasProps {
   fileUrl?: string | null;
@@ -195,6 +196,7 @@ export function PdfCanvas({
             transition: 'filter 0.2s ease-out'
           }}
         >
+          
           <div 
             className="pdfViewer" 
             ref={viewerContainerRef}

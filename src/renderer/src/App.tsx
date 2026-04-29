@@ -85,7 +85,7 @@ function App(): React.JSX.Element {
         activeDocumentId={activeDocumentId}
         setActiveDocumentId={setActiveDocumentId}
         onCloseDocument={handleCloseDocument}/>
-      <div className='px-3 w-full h-full'>
+      <div className=' w-full h-full'>
         <Routes>
           <Route path="/" element={<Home onOpenDocument={handleOpenDocument} />} />
           <Route path="/reader" element={
