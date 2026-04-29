@@ -10,6 +10,27 @@
 .pdfViewer .textLayer span {
   /* Kill Tailwind's default 1.5 line-height so text sits exactly on its coordinate */
   line-height: 1 !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* 
+ * The search `.highlight` spans need their background and padding back 
+ * that the generic span rule or Tailwind might squeeze out 
+ */
+.pdfViewer .textLayer .highlight {
+  margin: -1px;
+  padding: 1px;
+  background-color: rgba(180, 0, 170, 0.25); /* Typical PDF.js highlight color */
+  border-radius: 0px !important;
+  box-sizing: content-box !important;
+}
+
+.pdfViewer .textLayer .highlight.selected {
+  background-color: rgba(0, 100, 0, 0.25);
+}
+
+.pdfViewer .textLayer .highlight.appended {
+  position: absolute;
+  margin: 0;
 }

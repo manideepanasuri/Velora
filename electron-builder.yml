@@ -13,6 +13,10 @@ asarUnpack:
   - resources/**
 win:
   executableName: velora
+fileAssociations:
+  - ext: pdf
+    name: PDF Document
+    role: Editor
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

@@ -4,7 +4,12 @@ import { electronAPI } from '@electron-toolkit/preload'
 // Custom APIs for renderer
 const api = {
   openFileDialog: () => ipcRenderer.invoke('dialog:openFile'),
-  readFile: (path: string) => ipcRenderer.invoke('fs:readFile', path)
+  readFile: (path: string) => ipcRenderer.invoke('fs:readFile', path),
+  onOpenPdf: (callback: (path: string) => void) => {
+    const subscription = (_event: any, path: string) => callback(path)
+    ipcRenderer.on('open-pdf', subscription)
+    return () => ipcRenderer.removeListener('open-pdf', subscription)
+  }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -4,10 +4,22 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import fs from 'fs'
 
+let mainWindow: BrowserWindow | null = null
+let filesToOpen: string[] = [] // Queue for files before window is ready
 
+// Parse open files from arguments starting with .pdf
+function getPdfPathsFromArgs(args: string[]): string[] {
+  return args.filter(arg => arg.toLowerCase().endsWith('.pdf') && fs.existsSync(arg))
+}
+
+function sendPdfsToWindow(win: BrowserWindow, paths: string[]) {
+  paths.forEach(pdfPath => {
+    win.webContents.send('open-pdf', pdfPath)
+  })
+}
 
 function createWindow(): void {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -46,6 +58,10 @@ function createWindow(): void {
     }
   })
 
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+
   // Dev / Production loading
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
@@ -54,6 +70,54 @@ function createWindow(): void {
   }
 }
 
+
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  app.quit()
+  process.exit(0)
+}
+
+function getActiveOrCreateWindow(): BrowserWindow {
+  const windows = BrowserWindow.getAllWindows()
+  if (windows.length > 0) {
+    // Return last focused window, or just the first one if none are focused
+    const focused = BrowserWindow.getFocusedWindow()
+    return focused || windows[windows.length - 1]
+  }
+  createWindow()
+  return mainWindow!
+}
+
+app.on('second-instance', (_event, commandLine, workingDirectory) => {
+  const win = getActiveOrCreateWindow()
+  if (win.isMinimized()) win.restore()
+  win.focus()
+  const pdfs = getPdfPathsFromArgs(commandLine)
+  if (pdfs.length > 0) {
+    if (win.webContents.isLoading()) {
+      win.webContents.once('did-finish-load', () => sendPdfsToWindow(win, pdfs))
+    } else {
+      sendPdfsToWindow(win, pdfs)
+    }
+  }
+})
+
+// macOS dock drag & drop or double click
+app.on('open-file', (event, path) => {
+  event.preventDefault()
+  if (app.isReady()) {
+    const win = getActiveOrCreateWindow()
+    if (win.isMinimized()) win.restore()
+    win.focus()
+    if (win.webContents.isLoading()) {
+      win.webContents.once('did-finish-load', () => sendPdfsToWindow(win, [path]))
+    } else {
+      sendPdfsToWindow(win, [path])
+    }
+  } else {
+    filesToOpen.push(path)
+  }
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -120,6 +184,16 @@ app.whenReady().then(() => {
 
 
   createWindow()
+
+  // Handle command-line arguments on initial launch
+  const initialPdfs = [...getPdfPathsFromArgs(process.argv), ...filesToOpen]
+  filesToOpen = [] // clear queue
+
+  if (initialPdfs.length > 0 && mainWindow) {
+    mainWindow.webContents.once('did-finish-load', () => {
+      sendPdfsToWindow(mainWindow!, initialPdfs)
+    })
+  }
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

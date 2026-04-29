@@ -20,6 +20,17 @@ function App(): React.JSX.Element {
     console.log('Active document changed:', openDocuments);
   }, [openDocuments])
   
+  useEffect(() => {
+    // Listen for PDFs opened from OS (double click, drag & drop)
+    const removeListener = window.api.onOpenPdf((path: string) => {
+      // Use filename as tab name
+      const name = path.split('\\').pop()?.split('/').pop() || 'Document.pdf';
+      handleOpenDocument(path, name);
+      navigate('/reader');
+    });
+    return removeListener;
+  }, [openDocuments]); // Re-bind with latest openDocuments to avoid stale closure if handleOpenDocument depends on state
+
   const handleOpenDocument = (path: string, name: string) => {
     // Check if exactly this path is already open
     const existing = openDocuments.find(d => d.path === path);
