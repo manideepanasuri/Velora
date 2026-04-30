@@ -8,6 +8,10 @@
 
 Velora is a modern, cross-platform PDF Reader and Document Viewer application built with Electron, React, and Vite. Designed for speed, responsiveness, and an exceptional user experience, Velora provides professional-grade tools for managing and reading PDFs directly on your desktop.
 
+## Download
+
+👉 [Download Latest Release](https://github.com/manideepanasuri/Velora/releases/latest)
+
 ## 🎥 Walkthrough & Demo
 
 **[📺 Watch the Full YouTube Walkthrough Here](https://youtube.com/your-video-link-here)**
@@ -114,6 +118,6 @@ velora/
 Developed by **Manideep Anasuri**. Feel free to reach out, check out my other projects, or read my latest articles!
 
 - **GitHub:** [@manideepanasuri](https://github.com/manideepanasuri)
-- **LinkedIn:** [linkedin.com/in/manideepanasuri](https://www.linkedin.com/in/manideep-anasuri-/)
+- **LinkedIn:** [https://www.linkedin.com/in/manideep-anasuri-/](https://www.linkedin.com/in/manideep-anasuri-/)
 - **Portfolio / Website:** []()
 - **Blog:** []()
