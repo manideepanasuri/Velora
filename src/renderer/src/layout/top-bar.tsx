@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Moon, Sun, Settings, Minus, Square, X, Plus, PanelTop, ChevronLeft, ChevronRight, Copy } from 'lucide-react';
+import { Moon, Sun, Minus, Square, X, Plus, PanelTop, ChevronLeft, ChevronRight, Copy } from 'lucide-react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { restrictToHorizontalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';

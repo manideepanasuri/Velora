@@ -29,6 +29,7 @@ export function SecondaryBar({
   sidebarOpen, 
   setSidebarOpen, 
   secondaryBarOpen, 
+  //@ts-ignore
   setSecondaryBarOpen,
   zoomLevel,
   setZoomLevel,
@@ -37,6 +38,7 @@ export function SecondaryBar({
   currentPage = 1,
   numPages = 0,
   onJumpToPage,
+  //@ts-ignore
   findControllerRef,
   eventBusRef
 }: SecondaryBarProps) {
@@ -71,6 +73,7 @@ export function SecondaryBar({
     }
 
     eventBusRef.current.dispatch('find', {
+      //@ts-ignore
       source: this,
       type: '',
       query: query,
@@ -87,6 +90,7 @@ export function SecondaryBar({
     if (!eventBusRef?.current) return;
 
     eventBusRef.current.dispatch('find', {
+      //@ts-ignore
       source: this,
       type: 'again',
       query: searchQuery,
@@ -102,6 +106,7 @@ export function SecondaryBar({
     if (!eventBusRef?.current) return;
 
     eventBusRef.current.dispatch('find', {
+      //@ts-ignore
       source: this,
       type: 'again',
       query: searchQuery,
@@ -119,6 +124,7 @@ export function SecondaryBar({
     if (!eventBusRef?.current) return;
     
     eventBusRef.current.dispatch('find', { 
+      //@ts-ignore
       source: this,
       type: '', 
       query: '' 

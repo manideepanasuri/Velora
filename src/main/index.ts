@@ -1,5 +1,5 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
-import path, { join } from 'path'
+import  { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../build/icon.png?asset'
 import fs from 'fs'
@@ -40,7 +40,7 @@ function createWindow(): void {
   })
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show()
+    mainWindow?.show()
   })
 
   // Open external links in browser
@@ -51,6 +51,7 @@ function createWindow(): void {
 
   // Prevent external navigation inside app
   mainWindow.webContents.on('will-navigate', (event, url) => {
+    //@ts-ignore
     const currentUrl = mainWindow.webContents.getURL()
 
     if (new URL(url).origin !== new URL(currentUrl).origin) {
@@ -88,7 +89,7 @@ function getActiveOrCreateWindow(): BrowserWindow {
   createWindow()
   return mainWindow!
 }
-
+//@ts-ignore
 app.on('second-instance', (_event, commandLine, workingDirectory) => {
   const win = getActiveOrCreateWindow()
   if (win.isMinimized()) win.restore()

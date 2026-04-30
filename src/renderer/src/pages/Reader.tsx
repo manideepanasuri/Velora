@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import { PdfCanvas } from '@/reader/pdf-canvas';
 import { SecondaryBar } from '@/layout/secondary-bar';
