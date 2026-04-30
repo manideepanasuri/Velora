@@ -21,6 +21,10 @@ Dont forget to give a star ⭐, if found useful
 ### Why I built it
 Read it from [👉 here](https://medium.com/@manideepanasuri/i-built-a-dark-mode-pdf-reader-because-i-hated-every-existing-one-9734b8a45ac1)
 
+### 📽️ Demo
+
+<video src="./demo/demovid.mp4" controls width="100%"></video>
+
 ### 📸 Screenshots
 
 <div align="center">
