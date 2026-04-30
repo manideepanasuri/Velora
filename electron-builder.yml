@@ -11,7 +11,7 @@ files:
 asar: true
 asarUnpack:
   - resources/**
-compression: maximum
+compression: store
 fileAssociations:
   - ext: "pdf"
     name: "PDF Document"
