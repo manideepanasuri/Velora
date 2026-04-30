@@ -112,4 +112,4 @@ velora/
 Developed by **Manideep Anasuri**. Feel free to reach out, check out my other projects, or read my latest articles!
 
 - **GitHub:** [@manideepanasuri](https://github.com/manideepanasuri)
-- **LinkedIn:** [https://www.linkedin.com/in/manideep-anasuri-/](https://www.linkedin.com/in/manideep-anasuri-/)
+- **LinkedIn:** [https://www.linkedin.com/in/manideep-anasuri-](https://www.linkedin.com/in/manideep-anasuri-)
