@@ -25,6 +25,8 @@ interface PdfCanvasProps {
   linkServiceRef?: any;
   findControllerRef?: any;
   eventBusRef?: any;
+  initialPage?: number;
+  onPagesInit?: () => void;
 }
 
 export function PdfCanvas({ 
@@ -41,7 +43,9 @@ export function PdfCanvas({
   scrollContainerRef,
   linkServiceRef,
   findControllerRef,
-  eventBusRef
+  eventBusRef,
+  initialPage,
+  onPagesInit
 }: PdfCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerContainerRef = useRef<HTMLDivElement>(null);
@@ -94,14 +98,22 @@ export function PdfCanvas({
     }
     pdfViewerRef.current = viewer;
 
-    activeEventBusRef.current.on('pagesinit', () => {
+    const handlePagesInit = () => {
       // Set initial zoom once pages initialized
       viewer.currentScaleValue = zoomLevel.toString();
-    });
+      
+      if (initialPage && initialPage > 1) {
+        viewer.currentPageNumber = initialPage;
+      }
+      
+      if (onPagesInit) onPagesInit();
+    };
+    activeEventBusRef.current.on('pagesinit', handlePagesInit);
 
-    activeEventBusRef.current.on('pagechanging', (evt: any) => {
+    const handlePageChanging = (evt: any) => {
       onPageActive(evt.pageNumber);
-    });
+    };
+    activeEventBusRef.current.on('pagechanging', handlePageChanging);
 
     const loadDoc = async () => {
       try {
@@ -124,6 +136,8 @@ export function PdfCanvas({
 
     return () => {
       active = false;
+      activeEventBusRef.current.off('pagesinit', handlePagesInit);
+      activeEventBusRef.current.off('pagechanging', handlePageChanging);
       // Clean up the viewer memory
       // @ts-ignore
       viewer.setDocument(null);

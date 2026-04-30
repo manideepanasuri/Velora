@@ -35,6 +35,8 @@ export function ReaderPage({
   const [numPages, setNumPages] = useState(0);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [initialPage, setInitialPage] = useState<number>(1);
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const linkServiceRef = useRef<any>(null);
   const findControllerRef = useRef<any>(null);
@@ -43,6 +45,7 @@ export function ReaderPage({
   useEffect(() => {
     // Reset page states when opening a new document
     setCurrentPage(1);
+    setInitialPage(1);
     setNumPages(0);
     setPdfError(null);
     
@@ -55,6 +58,13 @@ export function ReaderPage({
       let isActive = true;
       const loadPdf = async () => {
         try {
+          // Await setting the initial page synchronously BEFORE we load the PDF into state
+          const db = await getDb();
+          const docSettings = await db.get('documents', activeDocument.path);
+          if (isActive && docSettings && docSettings.pageNumber > 1) {
+            setInitialPage(docSettings.pageNumber);
+          }
+
           const buffer = await (window.api as any).readFile(activeDocument.path);
           if (!buffer) throw new Error('Failed to read file buffer');
           if (isActive) {
@@ -77,19 +87,6 @@ export function ReaderPage({
     }
     return;
   }, [activeDocument?.id]);
-
-
-  useEffect(() => {
-  if (linkServiceRef.current && activeDocument) {
-    getDb().then(async (db) => {
-      const docSettings = await db.get('documents', activeDocument.path);
-      if (docSettings&&docSettings?.pageNumber > 1) {
-        linkServiceRef.current.page = docSettings.pageNumber;
-      }
-    });
-  }
-}, [linkServiceRef.current, activeDocument]); // Re-run when the ref is assigned
-
 
 
   const handlePageActive = useCallback((pageNumber: number) => {
@@ -142,6 +139,7 @@ export function ReaderPage({
             linkServiceRef={linkServiceRef}
             findControllerRef={findControllerRef}
             eventBusRef={eventBusRef}
+            initialPage={initialPage}
           />
         ) : (
           <div className="flex flex-1 w-full h-full justify-center items-center">
