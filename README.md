@@ -17,13 +17,13 @@ Velora is a modern, cross-platform PDF Reader and Document Viewer application bu
 *Replace these with your actual application screenshots*
 
 <div align="center">
-  <img src="" alt="Velora Dashboard" width="48%">
-  <img src="" alt="PDF Reader View - Dark Mode" width="48%">
+  <img src="./demo/dashboard.png" alt="Velora Dashboard" width="48%">
+  <img src="./demo/normal.png" alt="PDF Reader View - Dark Mode" width="48%">
 </div>
 <br>
 <div align="center">
-  <img src="" alt="PDF Reader View - Light Mode" width="48%">
-  <img src="" alt="Document Management" width="48%">
+  <img src="./demo/invert.png" alt="PDF Reader View - Light Mode" width="48%">
+  <img src="./demo/sepia.png" alt="Document Management" width="48%">
 </div>
 
 ## ✨ Features
