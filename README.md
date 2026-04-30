@@ -16,6 +16,9 @@ Velora is a modern, cross-platform PDF Reader and Document Viewer application bu
 
 <div style="text-align:center;width: 100%;"><div class="on-the-fly-behavior"><a href="https://getmechai.vercel.app/link.html?vpa=manideepanasuri@axl&nm=Manideep&amt=200" target="_blank"><img style="border: 2px solid #3e2e21;border-radius: 20px;" src="https://i.ibb.co/Xkdj83y/image-2.png" alt="buymechai" border="0"></a></div></div>
 
+### Why I built it
+Read it from [https://medium.com/@manideepanasuri/i-built-a-dark-mode-pdf-reader-because-i-hated-every-existing-one-9734b8a45ac1](https://medium.com/@manideepanasuri/i-built-a-dark-mode-pdf-reader-because-i-hated-every-existing-one-9734b8a45ac1)
+
 ### 📸 Screenshots
 
 <div align="center">
@@ -117,3 +120,4 @@ Developed by **Manideep Anasuri**. Feel free to reach out, check out my other pr
 
 - **GitHub:** [@manideepanasuri](https://github.com/manideepanasuri)
 - **LinkedIn:** [https://www.linkedin.com/in/manideep-anasuri-](https://www.linkedin.com/in/manideep-anasuri-)
+- **Blog:** [https://medium.com/@manideepanasuri/i-built-a-dark-mode-pdf-reader-because-i-hated-every-existing-one-9734b8a45ac1](https://medium.com/@manideepanasuri/i-built-a-dark-mode-pdf-reader-because-i-hated-every-existing-one-9734b8a45ac1)
