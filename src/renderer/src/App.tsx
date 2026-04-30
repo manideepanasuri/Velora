@@ -63,10 +63,12 @@ function App(): React.JSX.Element {
   const [rotation, setRotation] = useState(0);
 
   useEffect(() => {
+    //@ts-ignore
     const removeZoomIn = window.api.onZoomIn(() => {
       setZoomLevel((prev) => Math.min(prev + 0.25, 5.0));
     });
-    
+
+    //@ts-ignore
     const removeZoomOut = window.api.onZoomOut(() => {
       setZoomLevel((prev) => Math.max(prev - 0.25, 0.5));
     });

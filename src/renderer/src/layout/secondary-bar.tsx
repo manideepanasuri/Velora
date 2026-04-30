@@ -43,6 +43,7 @@ export function SecondaryBar({
   //@ts-ignore
   findControllerRef,
   eventBusRef,
+  //@ts-ignore
   rotation,
   setRotation
 }: SecondaryBarProps) {
