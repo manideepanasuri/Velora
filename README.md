@@ -12,6 +12,10 @@ Velora is a modern, cross-platform PDF Reader and Document Viewer application bu
 
 👉 [Download Latest Release](https://github.com/manideepanasuri/Velora/releases/latest)
 
+### Support the creator
+
+<div style="text-align:center;width: 100%;"><style scoped>.on-the-fly-behavior {cursor: pointer;}</style><div class="on-the-fly-behavior"><a href="https://getmechai.vercel.app/link.html?vpa=manideepanasuri@axl&nm=Manideep&amt=200" target="_blank"><img style="border: 2px solid #3e2e21;border-radius: 20px;" src="https://i.ibb.co/Xkdj83y/image-2.png" alt="buymechai" border="0"></a></div></div>
+
 ### 📸 Screenshots
 
 <div align="center">
