@@ -23,7 +23,7 @@ Read it from [👉 here](https://medium.com/@manideepanasuri/i-built-a-dark-mode
 
 ### 📽️ Demo
 
-<video src="./demo/demovid.mp4" controls width="100%"></video>
+![Demo](./demo/demovid.gif)
 
 ### 📸 Screenshots
 
