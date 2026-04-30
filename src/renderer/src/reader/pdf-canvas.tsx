@@ -79,7 +79,11 @@ export function PdfCanvas({
   
   useEffect(() => {
     if (pdfViewerRef.current) {
+      const prevPage = pdfViewerRef.current.currentPageNumber;
       pdfViewerRef.current.pagesRotation = rotation;
+      if (prevPage) {
+        pdfViewerRef.current.currentPageNumber = prevPage;
+      }
     }
   }, [rotation]);
 
