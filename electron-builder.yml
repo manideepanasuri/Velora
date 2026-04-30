@@ -1,5 +1,6 @@
-appId: com.electron.app
-productName: velora
+appId: com.velora.app
+productName: Velora
+copyright: "Copyright © 2026 Velora"
 directories:
   buildResources: build
 files:
@@ -7,20 +8,34 @@ files:
   - build/icon.*
   - package.json
   - resources
+asar: true
 asarUnpack:
   - resources/**
-win:
-  executableName: velora
+compression: maximum
 fileAssociations:
-  - ext: pdf
-    name: PDF Document
-    role: Editor
+  - ext: "pdf"
+    name: "PDF Document"
+    description: "Open PDF files with Velora"
+    role: Viewer
+win:
+  target: 
+    - nsis
+    - portable
+  executableName: velora
+  icon: build/icon.ico
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  artifactName: ${productName}-Windows-${version}-Setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+  oneClick: false
+  perMachine: false
+portable:
+  artifactName: ${productName}-Windows-${version}-Portable.${ext}
 mac:
+  target: dmg
+  icon: build/icon.icns
+  category: public.app-category.utilities
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
@@ -29,17 +44,17 @@ mac:
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${productName}-macOS-${version}.${ext}
 linux:
   target:
     - AppImage
-    - snap
     - deb
-  maintainer: electronjs.org
+  icon: build/icon.png
+  maintainer: Velora Team
   category: Utility
 appImage:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${productName}-Linux-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  - provider: github
+    releaseType: draft

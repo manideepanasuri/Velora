@@ -1,0 +1,47 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate_build:
+    name: Validating App Builds
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 25.9.0
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test Build (No Artifact Publish)
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            npm run build:win -- -c.publish=null
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            npm run build:mac -- -c.publish=null
+          else
+            npm run build:linux -- -c.publish=null
+          fi
+        shell: bash
+        
+      # Keeping artifacts minimal for PRs to save space. We just verify the build succeeds.

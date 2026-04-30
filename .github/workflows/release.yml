@@ -1,0 +1,75 @@
+name: Production Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Trigger only when a tag matching the pattern v1.0.0 is pushed
+  workflow_dispatch: # Allow manual pipeline execution
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  draft_release:
+    name: Create Draft Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required for GitHub Releases
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true # Keep as draft for manual review before publicizing
+          prerelease: false
+          generate_release_notes: true # Auto-generates changelogs based on merged PRs
+
+  build_and_publish:
+    name: Build & Publish App
+    needs: draft_release
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false # Let other OS builds continue if one fails
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    permissions:
+      contents: write # Allow asset upload to release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 25.9.0
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build applications
+        # electron-builder requires 'GITHUB_TOKEN' for github provider
+        # Uses cross-platform action
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # WIN_CSC_LINK: ${{ secrets.WIN_SIGNING_CERT_URL }}      # Placeholder for Windows cert
+          # WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CERT_PASSWORD }} # Placeholder for Windows cert pwd
+          # CSC_LINK: ${{ secrets.MAC_CERTS_BASE64 }}              # Apple Mac signing
+          # CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
+          # APPLE_ID: ${{ secrets.APPLE_ID }}                      # Notarization Apple ID
+          # APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}   # Notarization app password
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            npm run build:win -- -p always
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            npm run build:mac -- -p always
+          else
+            npm run build:linux -- -p always
+          fi
+        shell: bash

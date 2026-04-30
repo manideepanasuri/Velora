@@ -1,0 +1,51 @@
+name: Pre-Release (Beta/Alpha)
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_prerelease:
+    name: Build & Publish Pre-Release
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 25.9.0
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and Publish Beta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The -c.publish.releaseType=prerelease pushes as a pre-release directly.
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            npm run build:win -- -p always -c.publish.releaseType=prerelease
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            npm run build:mac -- -p always -c.publish.releaseType=prerelease
+          else
+            npm run build:linux -- -p always -c.publish.releaseType=prerelease
+          fi
+        shell: bash
