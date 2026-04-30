@@ -130,9 +130,22 @@ app.whenReady().then(() => {
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
+    
+    // Instead of completely blocking the event, we manually forward zoom actions 
+    // to the renderer through IPC, bypassing native Chromium zoom entirely.
+    window.webContents.on('before-input-event', (event, input) => {
+      if (input.type === 'keyDown' && (input.control || input.meta)) {
+        if (input.key === '=' || input.key === '+') {
+          event.preventDefault()
+          window.webContents.send('trigger-zoom-in')
+        } else if (input.key === '-') {
+          event.preventDefault()
+          window.webContents.send('trigger-zoom-out')
+        }
+      }
+    })
   })
 
   // IPC test

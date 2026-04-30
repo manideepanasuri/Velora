@@ -27,6 +27,7 @@ interface PdfCanvasProps {
   eventBusRef?: any;
   initialPage?: number;
   onPagesInit?: () => void;
+  rotation: number;
 }
 
 export function PdfCanvas({ 
@@ -45,7 +46,8 @@ export function PdfCanvas({
   findControllerRef,
   eventBusRef,
   initialPage,
-  onPagesInit
+  onPagesInit,
+  rotation
 }: PdfCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerContainerRef = useRef<HTMLDivElement>(null);
@@ -75,6 +77,11 @@ export function PdfCanvas({
     }
   }
   
+  useEffect(() => {
+    if (pdfViewerRef.current) {
+      pdfViewerRef.current.pagesRotation = rotation;
+    }
+  }, [rotation]);
 
   useEffect(() => {
     if (!containerRef.current || !viewerContainerRef.current) return;

@@ -18,6 +18,8 @@ interface ReaderProps {
   setZoomLevel: (val: number | ((prev: number) => number)) => void;
   pdfTheme: string;
   setPdfTheme: (val: string) => void;
+  rotation: number;
+  setRotation: (val: number | ((prev: number) => number)) => void;
 }
 
 export function ReaderPage({ 
@@ -29,7 +31,9 @@ export function ReaderPage({
   zoomLevel,
   setZoomLevel,
   pdfTheme,
-  setPdfTheme
+  setPdfTheme,
+  rotation,
+  setRotation
 }: ReaderProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(0);
@@ -48,6 +52,7 @@ export function ReaderPage({
     setInitialPage(1);
     setNumPages(0);
     setPdfError(null);
+    setRotation(0);
     
     setFileUrl(prevUrl => {
        if (prevUrl) URL.revokeObjectURL(prevUrl);
@@ -119,6 +124,8 @@ export function ReaderPage({
         }}
         findControllerRef={findControllerRef}
         eventBusRef={eventBusRef}
+        rotation={rotation}
+        setRotation={setRotation}
       />
       
       <div className="flex flex-1 w-full h-full overflow-hidden relative">
@@ -140,6 +147,7 @@ export function ReaderPage({
             findControllerRef={findControllerRef}
             eventBusRef={eventBusRef}
             initialPage={initialPage}
+            rotation={rotation}
           />
         ) : (
           <div className="flex flex-1 w-full h-full justify-center items-center">

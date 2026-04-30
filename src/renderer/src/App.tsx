@@ -60,24 +60,20 @@ function App(): React.JSX.Element {
   // Global viewer state for the active tab (in a fuller app, keep these objects linked to document IDs)
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [pdfTheme, setPdfTheme] = useState('normal');
+  const [rotation, setRotation] = useState(0);
 
   useEffect(() => {
-    // Moved Touchpad zoom logic to reader.tsx to handle Cursor Centering math appropriately.
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey) {
-        if (e.key === '=' || e.key === '+') {
-          e.preventDefault();
-          setZoomLevel((prev) => Math.min(prev + 0.1, 5));
-        } else if (e.key === '-') {
-          e.preventDefault();
-          setZoomLevel((prev) => Math.max(prev - 0.1, 0.5));
-        }
-      }
-    };
+    const removeZoomIn = window.api.onZoomIn(() => {
+      setZoomLevel((prev) => Math.min(prev + 0.25, 5.0));
+    });
+    
+    const removeZoomOut = window.api.onZoomOut(() => {
+      setZoomLevel((prev) => Math.max(prev - 0.25, 0.5));
+    });
 
-    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      removeZoomIn();
+      removeZoomOut();
     };
   }, []);
 
@@ -106,6 +102,8 @@ function App(): React.JSX.Element {
             setZoomLevel={setZoomLevel}
             pdfTheme={pdfTheme}
             setPdfTheme={setPdfTheme}
+            rotation={rotation}
+            setRotation={setRotation}
           />
         } />
         </Routes>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SidebarIcon, ZoomIn, ZoomOut, Search, ChevronUp, ChevronDown, Palette, X } from 'lucide-react';
+import { SidebarIcon, ZoomIn, ZoomOut, Search, ChevronUp, ChevronDown, Palette, X, RotateCcw, RotateCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   DropdownMenu, 
@@ -23,6 +23,8 @@ interface SecondaryBarProps {
   onJumpToPage?: (page: number) => void;
   findControllerRef?: React.RefObject<any>;
   eventBusRef?: React.RefObject<any>;
+  rotation: number;
+  setRotation: (val: number | ((prev: number) => number)) => void;
 }
 
 export function SecondaryBar({ 
@@ -40,10 +42,15 @@ export function SecondaryBar({
   onJumpToPage,
   //@ts-ignore
   findControllerRef,
-  eventBusRef
+  eventBusRef,
+  rotation,
+  setRotation
 }: SecondaryBarProps) {
   const handleZoomOut = () => setZoomLevel(Math.max(0.5, zoomLevel - 0.25));
   const handleZoomIn = () => setZoomLevel(Math.min(5.0, zoomLevel + 0.25));
+
+  const handleRotateLeft = () => setRotation((prev) => (prev - 90 + 360) % 360);
+  const handleRotateRight = () => setRotation((prev) => (prev + 90) % 360);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -315,11 +322,20 @@ export function SecondaryBar({
 
         <div className="h-4 w-[1px] bg-border mx-1"></div>
 
-        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground mr-1" onClick={handleZoomOut}>
+        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground mr-1" onClick={handleRotateLeft} title="Rotate Left">
+          <RotateCcw className="w-4 h-4" />
+        </Button>
+        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground mr-1" onClick={handleRotateRight} title="Rotate Right">
+          <RotateCw className="w-4 h-4" />
+        </Button>
+
+        <div className="h-4 w-[1px] bg-border mx-1"></div>
+
+        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground mr-1" onClick={handleZoomOut} title="Zoom Out">
           <ZoomOut className="w-4 h-4" />
         </Button>
         <span className="text-xs font-medium w-12 text-center text-foreground">{Math.round(zoomLevel * 100)}%</span>
-        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground ml-1" onClick={handleZoomIn}>
+        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground ml-1" onClick={handleZoomIn} title="Zoom In">
           <ZoomIn className="w-4 h-4" />
         </Button>
 
