@@ -64,8 +64,8 @@ Dark mode in Velora is built gracefully using standard Web APIs, React Context, 
 Clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/your-repo/velora.git
-cd velora
+git clone https://github.com/manideepanasuri/Velora.git
+cd Velora
 npm install
 ```
 
@@ -113,5 +113,3 @@ Developed by **Manideep Anasuri**. Feel free to reach out, check out my other pr
 
 - **GitHub:** [@manideepanasuri](https://github.com/manideepanasuri)
 - **LinkedIn:** [https://www.linkedin.com/in/manideep-anasuri-/](https://www.linkedin.com/in/manideep-anasuri-/)
-- **Portfolio / Website:** []()
-- **Blog:** []()
