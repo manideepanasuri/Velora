@@ -1,7 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../build/icon.png?asset'
 import fs from 'fs'
 
 let mainWindow: BrowserWindow | null = null
@@ -16,17 +16,19 @@ function sendPdfsToWindow(win: BrowserWindow, paths: string[]) {
   paths.forEach(pdfPath => {
     win.webContents.send('open-pdf', pdfPath)
   })
+
 }
+app.setName('Velora');
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
+    icon,
     show: false,
     autoHideMenuBar: true,
     frame: false,
     titleBarStyle: 'hidden',
-    ...(process.platform === 'linux' ? { icon } : {}),
 
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
