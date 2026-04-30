@@ -12,13 +12,7 @@ Velora is a modern, cross-platform PDF Reader and Document Viewer application bu
 
 👉 [Download Latest Release](https://github.com/manideepanasuri/Velora/releases/latest)
 
-## 🎥 Walkthrough & Demo
-
-**[📺 Watch the Full YouTube Walkthrough Here](https://youtube.com/your-video-link-here)**
-
 ### 📸 Screenshots
-
-*Replace these with your actual application screenshots*
 
 <div align="center">
   <img src="./demo/dashboard.png" alt="Velora Dashboard" width="48%">
