@@ -18,7 +18,6 @@ function sendPdfsToWindow(win: BrowserWindow, paths: string[]) {
   })
 
 }
-app.setName('Velora');
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -176,7 +175,6 @@ app.whenReady().then(() => {
   ipcMain.handle('fs:readFile', async (_, filePath) => {
     try {
       // Returns a Buffer, which is converted to Uint8Array over IPC
-      console.log('Reading file:', filePath);
       return fs.readFileSync(filePath)
     } catch (e) {
       console.error('Failed to read file:', e)

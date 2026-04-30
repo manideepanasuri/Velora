@@ -24,7 +24,6 @@ export function Sidebar({ numPages, currentPage, onJumpToPage, pdfDoc, linkServi
 
   useEffect(() => {
     if (tab === 'thumbs') {
-      console.log('Current page changed to:', currentPage);
       const activeEl = document.getElementById(`thumb-wrapper-${currentPage}`);
       if (activeEl) {
         activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

@@ -45,7 +45,6 @@ export function ReaderPage({
     setCurrentPage(1);
     setNumPages(0);
     setPdfError(null);
-    console.log('Active document changed in ReaderPage:', activeDocument);
     
     setFileUrl(prevUrl => {
        if (prevUrl) URL.revokeObjectURL(prevUrl);
@@ -61,8 +60,7 @@ export function ReaderPage({
           if (isActive) {
              const blob = new Blob([buffer], { type: 'application/pdf' });
              setFileUrl(URL.createObjectURL(blob));
-             console.log('PDF loaded successfully:', activeDocument.path);
-             console.log(URL.createObjectURL(blob));
+             
           }
         } catch (err: any) {
           console.error('Error loading PDF:', err);

@@ -15,10 +15,6 @@ function App(): React.JSX.Element {
   const activeDocument = openDocuments.find(d => d.id === activeDocumentId) || null;
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log('Active document changed:', openDocuments);
-  }, [openDocuments])
   
   useEffect(() => {
     // Listen for PDFs opened from OS (double click, drag & drop)

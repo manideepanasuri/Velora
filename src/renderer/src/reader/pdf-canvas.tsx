@@ -89,7 +89,6 @@ export function PdfCanvas({
       textLayerMode: 2, // Enable Mozilla's enhanced text selection CSS
       annotationMode: 2, // Enable form fields and annotations
     });
-    console.log('PDFViewer initialized:', viewer);
 
     if (linkServiceRef) {
       linkServiceRef.current.setViewer(viewer);
@@ -118,7 +117,6 @@ export function PdfCanvas({
         if (setPdfError) setPdfError(null);
       } catch (err: any) {
         console.error('Error loading PDF:', err);
-        console.log(err.message);
         if (setPdfError) setPdfError(err.message || 'Failed to load PDF');
       }
     };

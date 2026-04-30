@@ -160,12 +160,10 @@ export function SecondaryBar({
   }, [eventBusRef?.current]);
 
   const handleNextPage = () => {
-    console.log('Attempting to jump to next page from:', currentPage);
     if (currentPage < numPages && onJumpToPage) onJumpToPage(currentPage + 1);
   };
 
   const handlePrevPage = () => {
-    console.log('Attempting to jump to previous page from:', currentPage);
     if (currentPage > 1 && onJumpToPage) onJumpToPage(currentPage - 1);
   };
 
@@ -178,7 +176,6 @@ export function SecondaryBar({
 
   const handleJump = () => {
     const p = parseInt(inputVal, 10);
-    console.log('Attempting to jump to page:', p);
     if (!isNaN(p) && p >= 1 && p <= numPages && onJumpToPage) {
       onJumpToPage(p);
     } else {
