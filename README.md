@@ -10,6 +10,9 @@ Velora is a modern, cross-platform PDF Reader and Document Viewer application bu
 
 Dont forget to give a star ⭐, if found useful
 
+#### Total downloads: 
+![Toral downloads Downloads](https://img.shields.io/github/downloads/manideepanasuri/Velora/total)
+
 ## Download
 
 👉 [Download Latest Release](https://github.com/manideepanasuri/Velora/releases/latest)
