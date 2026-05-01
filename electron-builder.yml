@@ -17,6 +17,7 @@ fileAssociations:
     name: "PDF Document"
     description: "Open PDF files with Velora"
     role: Viewer
+    mimeType: "application/pdf"
 win:
   target: 
     - nsis
@@ -29,7 +30,7 @@ nsis:
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
   oneClick: false
-  perMachine: false
+  perMachine: true
 portable:
   artifactName: ${productName}-Windows-${version}-Portable.${ext}
 mac:
@@ -44,11 +45,14 @@ mac:
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
 dmg:
-  artifactName: ${productName}-macOS-${version}.${ext}
+  artifactName: ${productName}-macOS-${version}-${arch}.${ext}
 linux:
   target:
     - AppImage
     - deb
+    - snap
+    - flatpak
+
   icon: build/icon.png
   maintainer: Velora Team
   category: Utility

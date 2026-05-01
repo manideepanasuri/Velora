@@ -71,7 +71,8 @@ jobs:
           if [ "$RUNNER_OS" == "Windows" ]; then
             npm run build:win -- -p always
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            npm run build:mac -- -p always
+            npm run build:mac-intel -- -p always
+            npm run build:mac-arm -- -p always
           else
             npm run build:linux -- -p always
           fi

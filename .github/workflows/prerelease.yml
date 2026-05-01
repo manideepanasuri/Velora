@@ -47,7 +47,8 @@ jobs:
           if [ "$RUNNER_OS" == "Windows" ]; then
             npm run build:win -- -p always -c.publish.releaseType=prerelease
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            npm run build:mac -- -p always -c.publish.releaseType=prerelease
+            npm run build:mac-intel -- -p always -c.publish.releaseType=prerelease
+            npm run build:mac-arm -- -p always -c.publish.releaseType=prerelease
           else
             npm run build:linux -- -p always -c.publish.releaseType=prerelease
           fi
