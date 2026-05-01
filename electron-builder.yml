@@ -51,8 +51,6 @@ linux:
     - AppImage
     - deb
     - snap
-    - flatpak
-
   icon: build/icon.png
   maintainer: Velora Team
   category: Utility
