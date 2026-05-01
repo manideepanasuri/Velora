@@ -50,7 +50,6 @@ linux:
   target:
     - AppImage
     - deb
-    - snap
   icon: build/icon.png
   maintainer: Velora Team
   category: Utility
